@@ -1,7 +1,7 @@
 # Numerical-Characterisation-of-Competing-Populations
 
 
-**1. Problem Description and Importance**
+**Problem Description and Importance**
 
 The field of Synthetic Biology is an interdisciplinary branch that takes elements from Engineering, and Biology to both modify, and use existing biological systems to carry out an intended function.
 
@@ -9,7 +9,7 @@ The focal point of research within the field of _experimental_ Synthetic Biology
 
 The scope of our capstone project focuses on the design and development of easy-to-use instrumentation that is able to not only accurately monitor and differentiate the cell densities of two different bacterial populations within a flask, but also characterise the results into usable data and parameters. It is this characterization that requires the use of predictive model systems that combine experiments with theoretical modelling to explain how population dynamics aries. It is as such that this project seeks to tackle the issue of characterising competitive interactions between two cell populations.
 
-**2. Mathematical Formulation**
+**Mathematical Formulation**
 
 The problem outlined above can be modelled by the two variable Competitive Lotka-Volterra equation(s). The Competitive Lotka-Volterra equations are very similar to the Lotka-Volterra equations for predation in that the equation for each species has one term for self-interaction and one term for the  interaction with other species. This equation is shown as follows:
 
@@ -25,14 +25,14 @@ Here ![img](https://latex.codecogs.com/gif.latex?%5C%20x) is the size of the pop
 
 The general equation above can be constructed into an interaction matrix containing all ![img](https://latex.codecogs.com/gif.latex?%5Calpha) values. The coexisting equilibrium points can be found by isolating the point at which all derivatives are equal to zero, but that is not the origin. This can be found by inverting the interaction matrix and multiplying by the unit column vector. It is also important to note that there are always ![img](https://latex.codecogs.com/gif.latex?%5C2%5E%7BN%7D) equilibrium points, although the others often have at least one species&#39; population equal to zero.
 
-**3. Problem Inputs and Outputs**
+**Problem Inputs and Outputs**
 
 The inputs to the above model are characterised by ![img](https://latex.codecogs.com/gif.latex?%5C%20x_%7B1%7D%20%5C%20and%20%5C%20x_%7B2%7D), and the outputs are characterised by ![img](https://latex.codecogs.com/gif.latex?%5C%20r%2C%7E%20%5Calpha%20%2C) and ![img](https://latex.codecogs.com/gif.latex?%5C%20K) for both populations.
 
-**4. Tentative Numerical Techniques**
+**Tentative Numerical Techniques**
 
 In many cases, the process by which similar models have been used to predict the behaviour of important state variables to fit a solution of a differential equation to observed data has only been considered by few methods. It has predominantly been variations of the least squares regression method, though this is computationally exhaustive, especially for larger models. It is as such that we will be using an integration-based method, such as the one outlined by Kloppers et al. and Hodler et al.. This method will allow us to transform our system of ordinary differential equations to an algebraic system of equations that can be solved for the unknown parameters. This method is relatively robust and can be adapted to different and larger models.
 
-**5. Numerical Experiments**
+**Numerical Experiments**
 
 In order to verify that the numerical method above is capable of approximating the parameters of our model within the specified error limits, we will be running a series of iterative simulations in Simulink using known variables. The edge cases in which there are no interactions, or perhaps a large discrepancy in the initial concentrations, will be simulated and tested to further challenge the robustness of our model. If the model proves to be robust with a known dataset, then we can later continue to feed it with datasets embedded with simulated instrumentation errors. This will allow us to characterize the model&#39;s ability to handle external noise.
