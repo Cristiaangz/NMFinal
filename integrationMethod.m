@@ -37,6 +37,7 @@ for i = (1:m)
     xdash1(i,3) = (S1(i+1)*S2(i+1) + S1(i)*S2(i))/2;
 end
 
+global a1
 a1 = inv(transpose(xdash1)*xdash1)*transpose(xdash1)*d1;
 
 r1 = a1(1)
@@ -55,6 +56,7 @@ for i = (1:m)
     xdash2(i,3) = (S1(i+1)*S2(i+1) + S1(i)*S2(i))/2;
 end
 
+global a2
 a2 = inv(transpose(xdash2)*xdash2)*transpose(xdash2)*d2;
 
 r2 = a2(1)
@@ -62,17 +64,20 @@ k2 = -r2/a2(2)
 alpha21 = -(a2(3)*k2)/r2
 
 % %Resimulate the results [NOT Working]
-% tspan = [0 10];
-% x_init = [0.01 0.02];
-% 
-% [TEMP1, TEMP2] = odefun(dx1,dx2,a1,a2)
-% [dx1, dx2] = ode45(@(dx1, dx2) odefun(dx1,dx2,a1,a2), tspan, x_init);
-% 
-%  
-% 
-% function [dx1, dx2] = odefun(x1, x2, a1, a2)    
-%     dx1 = x1*(a1(1) + a1(2)*x1 +a1(3)*x2);
-%     dx2 = x2*(a2(1) + a2(2)*x2 +a2(3)*x1);
-% end
+tspan = [0 10];
+x_init = [0.01 0.02];
+
+[dx1, dx2] = ode45(odefun, tspan, x_init);
+
+ 
+
+function [dx1, dx2] = odefun(x1, x2)
+    global a1
+    a1
+    global a2
+    a2
+    dx1 = x1*(a1(1) + a1(2)*(x1^2) +a1(3)*x2*x2);
+    dx2 = x2*(a2(1) + a2(2)*x2 +a2(3)*x1);
+end
 
 
