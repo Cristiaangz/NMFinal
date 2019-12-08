@@ -1,8 +1,10 @@
 %Values in simulation:
+%   x1_init = 0.01
 %   R1: 1.5
 %   Alpha12: 1.1
 %   K1 = 1.2
 
+%   x2_init = 0.02
 %   R2: 1.6
 %   Alpha21: 1.4
 %   K2 = 1.3
@@ -15,8 +17,8 @@ load X2
 
 % hold on
 % title("Analyzed Timeseries")
-% plot(X1)
-% plot(X2)
+% scatter(X1)
+% scatter(X2)
 
 S1 = X1.data;
 S2 = X2.data;
@@ -50,4 +52,19 @@ for i = (1:m)
 end
 
 a2 = inv(transpose(xdash2)*xdash2)*transpose(xdash2)*d2
+
+%Resimulate the results [NOT Working]
+tspan = [0 10];
+x_init = [0.01 0.02];
+
+[TEMP1, TEMP2] = odefun(dx1,dx2,a1,a2)
+[dx1, dx2] = ode45(@(dx1, dx2) odefun(dx1,dx2,a1,a2), tspan, x_init);
+
  
+
+function [dx1, dx2] = odefun(x1, x2, a1, a2)    
+    dx1 = x1*(a1(1) + a1(2)*x1 +a1(3)*x2);
+    dx2 = x2*(a2(1) + a2(2)*x2 +a2(3)*x1);
+end
+
+
