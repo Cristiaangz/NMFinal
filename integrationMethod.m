@@ -123,6 +123,9 @@ x_init = [0.01 0.02];
 % % dy2 = gradient(y(:,2));
 x2_fit_ = y(:,2);
 x1_fit_ = y(:,1);
+x2_reg = x2_fit_;
+x1_reg = x1_fit_;
+
 %% Verification 4: Checking Overall Shape 1)Original vs. 2)Fitted
 % Scale is off by 10?
 figure(4)
@@ -159,10 +162,10 @@ hold off
 figure(6)
 hold on;
 plot(X1)
-plot(t,x1_fit/10)
+plot(t,x1_fit_/10)
 plot(X2)
-plot(t,x2_fit/10)
-title("Ver.6 -- Checking Shape After Diviing Fit by 10")
+plot(t,x2_fit_/10)
+title("Ver.6 -- Checking Shape After Dividing Fit by 10")
 legend("X1","Fitted X1","X2","Fitted X2")
 hold off
 %% Verifcation 7: Comparing a matrix fits with useful parameter fits
@@ -174,7 +177,7 @@ plot(X2)
 plot(t,x2_fit/10)
 plot(t,x1_fit_/10)
 plot(t,x2_fit_/10)
-title("Ver.7 -- Checking all shaapes")
+title("Ver.7 -- Checking all shapes, both method give same graph")
 legend("X1","Fitted X1","X2","Fitted X2","Param Fit X1","Param Fit X2")
 hold off
 %% Functions

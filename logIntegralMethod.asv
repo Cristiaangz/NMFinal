@@ -116,7 +116,7 @@ plot(t,x1_reg/10)
 plot(t,x2_reg/10)
 title("Ver.4 -- Checking all shaapes")
 legend("X1","X2","Log Fit X1","Log Fit X2","Intrgrl Fit X1","Intrgrl Fit X2")
-xlabel("seems to give same result")
+
 hold off
 
 %% Functions
