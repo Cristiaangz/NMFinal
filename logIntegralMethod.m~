@@ -14,23 +14,19 @@ S2 = X2.data;
 m = length(S1)-1;
 n = 2;
 
-% Solving for timeseries X1
+% Solving for Species 1
 
 d = zeros(m, 1);
-xdash = zeros(m, n);
+xdash = ones(m, n);
 
 for i = (1:m)
-    d(i) = (S1(i+1) - S1(i));
-    xdash(i,1) = (S1(i+1) + S1(i))/2;
-    xdash(i,2) = ((S1(i+1))^2 + (S1(i))^2)/2;
-    xdash(i,3) = (S1(i+1)*S2(i+1) + S1(i)*S2(i))/2;
+    d(i) = (log(S1(i+1)) - log(S1(i)));
+    xdash(i,2) = (S1(i+1) + S1(i))/2;
+    xdash(i,3) = (S2(i+1) + S2(i))/2;
 end
 
 % There is a problem when we try to get the A matrix this arises from the
 % fact that the rank below is 2 instead of the expected 3 which makes it
 % non-invertible.
 
-a1 = inv(transpose(xdash)*xdash)*transpose(xdash)*d
-
-t = linspace(0, 10, 0.1);
- 
+transpose(xdash)*xdash)
