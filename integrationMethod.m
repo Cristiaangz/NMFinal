@@ -9,6 +9,7 @@
 %   Alpha21: 1.4
 %   K2 = 1.3
 clc
+
 clear
 
 load X1
@@ -35,7 +36,7 @@ for i = (1:m)
 end
 
 global a1
-a1 = (inv(transpose(xdash1)*xdash1)\transpose(xdash1)*d1)/sampleRate;
+a1 = (inv(transpose(xdash1)*xdash1)*transpose(xdash1)*d1)/sampleRate;
 
 global r1 k1 alpha12;
 r1 = a1(1);
@@ -55,7 +56,7 @@ for i = (1:m)
 end
 
 global a2
-a2 = (inv(transpose(xdash2)*xdash2)\transpose(xdash2)*d2)/sampleRate;
+a2 = (inv(transpose(xdash2)*xdash2)*transpose(xdash2)*d2)/sampleRate;
 
 global r2 k2 alpha21;
 r2 = a2(1);

@@ -8,8 +8,8 @@
 %   R2: 1.6
 %   Alpha21: 1.4
 %   K2 = 1.3
-
 clc
+
 clear
 
 load X1
@@ -25,17 +25,18 @@ sampleRate = t1(2)-t1(1);
 
 % Solving for Species 1
 
-l1 = zeros(m, 1);
-xdash1 = ones(m, n);
+d1 = zeros(m, 1);
+xdash1 = zeros(m, n);
 
 for i = (1:m)
-    l1(i) = (log(S1(i+1)) - log(S1(i)));
-    xdash1(i,2) = (S1(i+1) + S1(i))/2;
-    xdash1(i,3) = (S2(i+1) + S2(i))/2;
+    d1(i) = (S1(i+1) - S1(i));
+    xdash1(i,1) = (S1(i+1) + S1(i))/2;
+    xdash1(i,2) = ((S1(i+1))^2 + (S1(i))^2)/2;
+    xdash1(i,3) = (S1(i+1)*S2(i+1) + S1(i)*S2(i))/2;
 end
 
 global a1
-a1 = inv(transpose(xdash1)*xdash1)\transpose(xdash1)*l1/sampleRate;
+a1 = (transpose(xdash1)*xdash1)\transpose(xdash1)*d1)/sampleRate;
 
 global r1 k1 alpha12;
 r1 = a1(1);
@@ -44,17 +45,18 @@ alpha12 = -(a1(3)*k1)/r1;
 
 % Solving for Species 2
 
-l2 = zeros(m, 1);
-xdash2 = ones(m, n);
+d2 = zeros(m, 1);
+xdash2 = zeros(m, n);
 
 for i = (1:m)
-    l2(i) = (log(S2(i+1)) - log(S2(i)));
-    xdash2(i,2) = (S2(i+1) + S2(i))/2;
-    xdash2(i,3) = (S1(i+1) + S1(i))/2;
+    d2(i) = (S2(i+1) - S2(i));
+    xdash2(i,1) = (S2(i+1) + S2(i))/2;
+    xdash2(i,2) = ((S2(i+1))^2 + (S2(i))^2)/2;
+    xdash2(i,3) = (S1(i+1)*S2(i+1) + S1(i)*S2(i))/2;
 end
 
 global a2
-a2 = inv(transpose(xdash2)*xdash2)*transpose(xdash2)*l2/sampleRate;
+a2 = (inv(transpose(xdash2)*xdash2)\transpose(xdash2)*d2)/sampleRate;
 
 global r2 k2 alpha21;
 r2 = a2(1);
@@ -111,13 +113,13 @@ figure(5)
 sgtitle("Ver.5-- 1)X1 2)X2")
 subplot(2,1,1);
 hold on;
-scatter(t1, S1)
+plot(X1)
 plot(t,x1_fit_)
 legend("X1","Fitted X1")
 hold off;
 subplot(2,1,2);
 hold on;
-scatter(t1, S2)
+plot(X2)
 plot(t,x2_fit_)
 legend("X2","Fitted X2")
 hold off
@@ -148,7 +150,6 @@ function f = mysysfun(t,X)
 
 global a1
 global a2
-global sampleRate
 f(1,1) = (X(1)*a1(1) + (X(1)^2)*a1(2) + X(1)*X(2)*a1(3));
 f(2,1) = (X(2)*a2(1) + (X(2)^2)*a2(2) + X(2)*X(1)*a2(3));
 end
