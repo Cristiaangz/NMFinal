@@ -35,7 +35,7 @@ for i = (1:m)
 end
 
 global a1
-a1 = inv(transpose(xdash1)*xdash1)*transpose(xdash1)*l1/sampleRate;
+a1 = inv(transpose(xdash1)*xdash1)\transpose(xdash1)*l1/sampleRate;
 
 global r1 k1 alpha12;
 r1 = a1(1);
@@ -54,7 +54,7 @@ for i = (1:m)
 end
 
 global a2
-a2 = inv(transpose(xdash2)*xdash2)*transpose(xdash2)*l2/sampleRate;
+a2 = inv(transpose(xdash2)*xdash2)\transpose(xdash2)*l2/sampleRate;
 
 global r2 k2 alpha21;
 r2 = a2(1);
@@ -148,7 +148,6 @@ function f = mysysfun(t,X)
 
 global a1
 global a2
-global sampleRate
 f(1,1) = (X(1)*a1(1) + (X(1)^2)*a1(2) + X(1)*X(2)*a1(3));
 f(2,1) = (X(2)*a2(1) + (X(2)^2)*a2(2) + X(2)*X(1)*a2(3));
 end
