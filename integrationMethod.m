@@ -8,19 +8,19 @@
 %   R2: 1.6
 %   Alpha21: 1.4
 %   K2 = 1.3
-
 clc
 clear
 
 load X1
 load X2
 
+t1 = X1.time;
 S1 = X1.data;
 S2 = X2.data;
 m = length(S1)-1;
 n = 2;
 global sampleRate
-sampleRate = 0.1;
+sampleRate = t1(2)-t1(1);
 
 % Solving for Species 1
 
@@ -74,18 +74,12 @@ x1_fit = y(:,1);
 %% Verification 1 on a matrix: Checking Overall Shape 1)Original vs. 2)Fitted
 figure(1)
 sgtitle("Ver.1--Checking Overall Shape 1)Original vs. 2)Fitted")
-subplot(2,1,1);
 hold on;
-plot(X1)
-plot(X2)
-legend("x1","x2")
-hold off;
-subplot(2,1,2);
-hold on;
+scatter(t1, S1)
+scatter(t1, S2)
 plot(t,x1_fit);
 plot(t,x2_fit);
-title("Scale is off by 10?")
-legend("x1","x2")
+legend("S1","S2", "S1 Calculated", "S2 Calculated")
 hold off
 %% Verification 2 on a matrix: 1)X1 2)X2
 figure(2)
@@ -93,24 +87,14 @@ sgtitle("Ver.2-- 1)X1 2)X2")
 subplot(2,1,1);
 hold on;
 plot(X1)
-plot(t,x1_fit/10)
+plot(t,x1_fit)
 legend("X1","Fitted X1")
 hold off;
 subplot(2,1,2);
 hold on;
 plot(X2)
-plot(t,x2_fit/10)
+plot(t,x2_fit)
 legend("X2","Fitted X2")
-hold off
-%% Verification 3 on a matrix: All on same graph
-figure(3)
-hold on;
-plot(X1)
-plot(t,x1_fit/10)
-plot(X2)
-plot(t,x2_fit/10)
-title("Ver.3 -- Checking Shape After Diviing Fit by 10")
-legend("X1","Fitted X1","X2","Fitted X2")
 hold off
 %% Resimulate the results by Solving System of ODE's using useful parameters
 tspan = [0 10];
@@ -123,45 +107,28 @@ x1_fit_ = y(:,1);
 x2_reg = x2_fit_;
 x1_reg = x1_fit_;
 
-%% Verification 4: Checking Overall Shape 1)Original vs. 2)Fitted
-% Scale works now
-figure(4)
-sgtitle("Ver.4--Checking Overall Shape 1)Original vs. 2)Fitted useful parameter")
-subplot(2,1,1);
-hold on;
-plot(X1)
-plot(X2)
-legend("x1","x2")
-hold off;
-subplot(2,1,2);
-hold on;
-plot(t,x1_fit_);
-plot(t,x2_fit_);
-title("Scale is off by 10?")
-legend("x1","x2")
-hold off
 %% Verification 5: on a matrix: 1)X1 2)X2
 figure(5)
 sgtitle("Ver.5-- 1)X1 2)X2")
 subplot(2,1,1);
 hold on;
 plot(X1)
-plot(t,x1_fit_/10)
+plot(t,x1_fit_)
 legend("X1","Fitted X1")
 hold off;
 subplot(2,1,2);
 hold on;
 plot(X2)
-plot(t,x2_fit_/10)
+plot(t,x2_fit_)
 legend("X2","Fitted X2")
 hold off
 %% Verification 6: on useful param. All on same graph
 figure(6)
 hold on;
 plot(X1)
-plot(t,x1_fit_/10)
+plot(t,x1_fit_)
 plot(X2)
-plot(t,x2_fit_/10)
+plot(t,x2_fit_)
 title("Ver.6 -- Checking Shape After Dividing Fit by 10")
 legend("X1","Fitted X1","X2","Fitted X2")
 hold off
@@ -169,11 +136,11 @@ hold off
 figure(7)
 hold on;
 plot(X1)
-plot(t,x1_fit/10)
+plot(t,x1_fit)
 plot(X2)
-plot(t,x2_fit/10)
-plot(t,x1_fit_/10)
-plot(t,x2_fit_/10)
+plot(t,x2_fit)
+plot(t,x1_fit_)
+plot(t,x2_fit_)
 title("Ver.7 -- Checking all shapes, both method give same graph")
 legend("X1","Fitted X1","X2","Fitted X2","Param Fit X1","Param Fit X2")
 hold off
