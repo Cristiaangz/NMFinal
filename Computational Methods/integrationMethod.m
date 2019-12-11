@@ -26,43 +26,21 @@ speciesOne_Noisy = (speciesOne_Noisy(2, :)).';
 speciesTwo_Clean = (speciesTwo_Clean(2, :)).';
 speciesTwo_Noisy = (speciesTwo_Noisy(2, :)).';
 
-m = length(speciesOne_Noisy)-1;
-n = 2;
-
+global sampleRate
 sampleRate = TimeSeries(2)-TimeSeries(1);
 
 %% Solving for Species 1
 
-dMatrixOne = zeros(m, 1);
-xBarOne = zeros(m, n);
-
-for i = (1:m)
-    dMatrixOne(i) = (speciesOne_Noisy(i+1) - speciesOne_Noisy(i))/sampleRate;
-    xBarOne(i,1) = (speciesOne_Noisy(i+1) + speciesOne_Noisy(i))/2;
-    xBarOne(i,2) = ((speciesOne_Noisy(i+1))^2 + (speciesOne_Noisy(i))^2)/2;
-    xBarOne(i,3) = (speciesOne_Noisy(i+1)*speciesTwo_Noisy(i+1) + speciesOne_Noisy(i)*speciesTwo_Noisy(i))/2;
-end
-
 global a1 r1 k1 alpha12;
-a1 = (inv(transpose(xBarOne)*xBarOne)*transpose(xBarOne)*dMatrixOne);
+a1 = intReg(speciesOne_Noisy, speciesTwo_Noisy);
 r1 = a1(1);
 k1 = -r1/a1(2);
 alpha12 = -(a1(3)*k1)/r1;
 
 %% Solving for Species 2
 
-d2 = zeros(m, 1);
-xdash2 = zeros(m, n);
-
-for i = (1:m)
-    d2(i) = (speciesTwo_Noisy(i+1) - speciesTwo_Noisy(i))/sampleRate;
-    xdash2(i,1) = (speciesTwo_Noisy(i+1) + speciesTwo_Noisy(i))/2;
-    xdash2(i,2) = ((speciesTwo_Noisy(i+1))^2 + (speciesTwo_Noisy(i))^2)/2;
-    xdash2(i,3) = (speciesOne_Noisy(i+1)*speciesTwo_Noisy(i+1) + speciesOne_Noisy(i)*speciesTwo_Noisy(i))/2;
-end
-
 global a2 r2 k2 alpha21;
-a2 = (inv(transpose(xdash2)*xdash2)*transpose(xdash2)*d2);
+a2 = intReg(speciesTwo_Noisy, speciesOne_Noisy);
 r2 = a2(1);
 k2 = -r2/a2(2);
 alpha21 = -(a2(3)*k2)/r2;
@@ -70,14 +48,14 @@ alpha21 = -(a2(3)*k2)/r2;
 %% Resimulate  Results by Solving System of ODE's using A's
 
 tspan = linspace(0, TimeSeries(end), (TimeSeries(end)/sampleRate)+1);
-x_init = [0.01 0.02];
-[t,y] = ode45(@mysysfun,tspan,x_init);
-x2_raw_fit = y(:,2);
+x_init = [speciesOne_Clean(1) speciesTwo_Clean(1)];
+[t,y] = ode45(@linearODE,tspan,x_init);
+
 x1_raw_fit = y(:,1);
+x2_raw_fit = y(:,2);
 
 
-
-%% Verification 1: Noisy Signal and Raw Regression
+%% Noisy Signal and Raw Regression
 
 figure(1)
 
@@ -91,7 +69,25 @@ scatter(TimeSeries, speciesTwo_Noisy)
 plot(t,x1_raw_fit);
 plot(t,x2_raw_fit);
 
-legend("S1","S2", "S1 Calculated", "S2 Calculated")
+legend("Species 1","Species 2", "Species 1 Regression", "Species 2 Regression")
+
+hold off
+
+%% Clean Signal and Raw Regression
+
+figure(2)
+
+title("Clean Signal and Raw Regression")
+
+hold on;
+
+scatter(TimeSeries, speciesOne_Clean)
+scatter(TimeSeries, speciesTwo_Clean)
+
+plot(t,x1_raw_fit);
+plot(t,x2_raw_fit);
+
+legend("Species 1","Species 2", "Species 1 Regression", "Species 2 Regression")
 
 hold off
 
@@ -99,8 +95,8 @@ hold off
 
 x1_error = speciesOne_Clean - x1_raw_fit;
 x2_error = speciesTwo_Clean - x2_raw_fit;
-var_raw_x1 = sum(x1_error.^2)/(length(TimeSeries)-2);
-var_raw_x2 = sum(x2_error.^2)/(length(TimeSeries)-2);
+var_raw_x1 = sum(x1_error.^2)/(length(TimeSeries)-2)
+var_raw_x2 = sum(x2_error.^2)/(length(TimeSeries)-2)
 
 figure(2)
 
@@ -118,7 +114,7 @@ scatter(x2_raw_fit, speciesTwo_Clean);
 
 tspan = linspace(0, TimeSeries(end), (TimeSeries(end)/sampleRate)+1);
 x_init = [0.01 0.02];
-[t,y] = ode45(@mysysfun2,tspan,x_init);
+[t,y] = ode45(@lotkaVolterraODE,tspan,x_init);
 
 
 x2_reg_fit = y(:,2);
@@ -161,7 +157,28 @@ title("Calculated vs. Expected Species Two")
 scatter(x2_reg_fit, speciesTwo_Clean);
 
 %% Functions
-function f = mysysfun(t,X)
+
+
+% Integration Regression for Lotka-Volterra competitive equation. 
+% X1 is target species and X2 is competitor.
+function a = intReg(X1, X2) 
+    global sampleRate
+    n = 2;
+    m = length(X1)-1;
+    dMatrixOne = zeros(m, 1);
+    xBarOne = zeros(m, n);
+
+    for i = (1:m)
+        dMatrixOne(i) = (X1(i+1) - X1(i))/sampleRate;
+        xBarOne(i,1) = (X1(i+1) + X1(i))/2;
+        xBarOne(i,2) = ((X1(i+1))^2 + (X1(i))^2)/2;
+        xBarOne(i,3) = (X1(i+1)*X2(i+1) + X1(i)*X2(i))/2;
+    end
+
+    a = (inv(transpose(xBarOne)*xBarOne)*transpose(xBarOne)*dMatrixOne);
+end
+
+function f = linearODE(t,X)
 
 global a1
 global a2
@@ -169,7 +186,7 @@ f(1,1) = (X(1)*a1(1) + (X(1)^2)*a1(2) + X(1)*X(2)*a1(3));
 f(2,1) = (X(2)*a2(1) + (X(2)^2)*a2(2) + X(2)*X(1)*a2(3));
 end
 
-function f = mysysfun2(t,X)
+function f = lotkaVolterraODE(t,X)
 
 global r1 k1 alpha12 r2 k2 alpha21;
 f(1,1) = r1*X(1) - ((r1*X(1)^2)/k1) - ((r1*alpha12*X(2)*X(1))/k1);
