@@ -129,7 +129,6 @@ x1_reg_fit = y(:,1);
 %% Verification 1: Noisy Signal and Regularized Regression
 
 figure(2)
-clf
 subplot(2,2,1)
 title("Noisy Signal and Regularized Regression")
 
@@ -173,12 +172,12 @@ var_reg_x2 = sum(x2_reg_error.^2)/(length(TimeSeries)-2);
 
 
 subplot(2,2,3)
+title("Calculated vs. Expected Species One")
 scatter(x1_reg_fit, speciesOne_Clean);
-title("Calculated vs. Expected Species One");
 
 subplot(2,2,4)
+title("Calculated vs. Expected Species Two")
 scatter(x2_reg_fit, speciesTwo_Clean);
-title("Calculated vs. Expected Species Two");
 
 %% Functions
 
