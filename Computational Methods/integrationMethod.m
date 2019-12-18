@@ -175,10 +175,14 @@ var_reg_x2 = sum(x2_reg_error.^2)/(length(TimeSeries)-2);
 subplot(2,2,3)
 scatter(x1_reg_fit, speciesOne_Clean);
 title("Calculated vs. Expected Species One");
+xlabel(sprintf("R1: %f Alpha12: %f k1: %f", r1, alpha12, k1))
 
 subplot(2,2,4)
 scatter(x2_reg_fit, speciesTwo_Clean);
 title("Calculated vs. Expected Species Two");
+xlabel(sprintf("R2: %f Alpha21: %f k2: %f", r2, alpha21, k2))
+
+saveas(gcf, 'output', 'png')
 
 %% Functions
 
